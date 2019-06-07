@@ -251,10 +251,10 @@ void DS18B20_Write_Byte(uint8_t dat)
 		if (testb)
 		{			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, LOW);
-			delay_us(8);   //1us < ?a???車那㊣ < 15us
+			delay_us(8);   
 			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, HIGH);
-			delay_us(58);    //58us+8us>60us
+			delay_us(58);    
 		}		
 		else
 		{			
@@ -263,7 +263,7 @@ void DS18B20_Write_Byte(uint8_t dat)
 			delay_us(70);
 			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, HIGH);
-			/* 1us < Trec(???∩那㊣??) < ?T??∩車*/
+			
 			delay_us(2);
 		}
 	}
@@ -284,13 +284,13 @@ float DS18B20_Get_Temp(void)
 	
 	DS18B20_Rst();	   
 	DS18B20_Presence();	 
-	DS18B20_Write_Byte(0XCC);				/* 足?1y ROM */
-	DS18B20_Write_Byte(0X44);				/* ?a那?℅a?? */
+	DS18B20_Write_Byte(0XCC);				
+	DS18B20_Write_Byte(0X44);				
 	
 	DS18B20_Rst();
   DS18B20_Presence();
-	DS18B20_Write_Byte(0XCC);				/* 足?1y ROM */
-  DS18B20_Write_Byte(0XBE);				/* ?芍???豕?米 */
+	DS18B20_Write_Byte(0XCC);				
+  DS18B20_Write_Byte(0XBE);				
 	
 	tplsb = DS18B20_Read_Byte();		 
 	tpmsb = DS18B20_Read_Byte(); 
@@ -298,7 +298,7 @@ float DS18B20_Get_Temp(void)
 	s_tem = tpmsb<<8;
 	s_tem = s_tem | tplsb;
 	
-	if( s_tem < 0 )		/* ?o???豕 */
+	if( s_tem < 0 )		
 		f_tem = (~s_tem+1) * 0.0625;	
 	else
 		f_tem = s_tem * 0.0625;
