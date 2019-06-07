@@ -225,14 +225,22 @@ static uint8_t DS18B20_Check(void) {
 /**
 	读取 ds18b20 字节
 */
+uint8_t dat = 0;
 uint8_t DS18B20_Read_Byte(void)
 {
-	uint8_t i, j, dat = 0;	
+	uint8_t i, j;	
 	
 	for(i=0; i<8; i++) 
 	{
+		DS18B20_Mode_OUT();
+		/* 拉低电平 */
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, LOW);
+		delay_us(8);
+		
+		DS1820_MODE_IN();
 		j = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6);
 		dat = (dat) | (j<<i);
+		delay_us(60);
 	}
 	
 	return dat;																																																																																
@@ -251,20 +259,20 @@ void DS18B20_Write_Byte(uint8_t dat)
 		if (testb)
 		{			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, LOW);
-			delay_us(8);   
+			delay_us(16);   
 			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, HIGH);
-			delay_us(58);    
+			delay_us(45);    
 		}		
 		else
 		{			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, LOW);
 			/* 60us < Tx 0 < 120us */
-			delay_us(70);
+			delay_us(45);
 			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, HIGH);
 			
-			delay_us(2);
+			delay_us(16);
 		}
 	}
 }
@@ -282,13 +290,13 @@ float DS18B20_Get_Temp(void)
 {
 	
 	
-	DS18B20_Rst();	   
-	DS18B20_Presence();	 
+	//DS18B20_Rst();	   
+	//DS18B20_Presence();	 
 	DS18B20_Write_Byte(0XCC);				
 	DS18B20_Write_Byte(0X44);				
 	
-	DS18B20_Rst();
-  DS18B20_Presence();
+	//DS18B20_Rst();
+  //DS18B20_Presence();
 	DS18B20_Write_Byte(0XCC);				
   DS18B20_Write_Byte(0XBE);				
 	
@@ -334,13 +342,11 @@ void MX_GPIO_Init(void)
 
 void delay_us(uint16_t us)
 {
-  uint16_t i;
-	
-	do
-  {
-    i = 6;
-		while(i--)__nop();
-  } while (--us);
+  SysTick->LOAD=us*9;          //时间加载       
+	SysTick->CTRL|=0x01;             //开始倒数     
+	while(!(SysTick->CTRL&(1<<16))); //等待时间到达  
+	SysTick->CTRL=0X00000000;        //关闭计数器 
+	SysTick->VAL=0X00000000;         //清空计数器     
 }
 
 void delay_ms(uint16_t ms)

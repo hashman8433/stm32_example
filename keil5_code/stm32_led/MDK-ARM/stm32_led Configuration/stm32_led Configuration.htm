@@ -3,7 +3,7 @@
 <title>Static Call Graph - [stm32_led Configuration\stm32_led Configuration.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image stm32_led Configuration\stm32_led Configuration.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Jun 06 17:39:28 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Jun 07 09:18:23 2019
 <BR><P>
 <H3>Maximum Stack Usage =        128 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -20,7 +20,6 @@ Mutually Recursive functions
  <LI><a href="#[7]">DebugMon_Handler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[7]">DebugMon_Handler</a><BR>
  <LI><a href="#[8]">PendSV_Handler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[8]">PendSV_Handler</a><BR>
  <LI><a href="#[1c]">ADC_IRQHandler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[1c]">ADC_IRQHandler</a><BR>
- <LI><a href="#[6f]">delay_us</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[6f]">delay_us</a><BR>
 </UL>
 <P>
 <H3>
@@ -459,7 +458,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
-<BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
+<BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
 </UL>
 
 <P><STRONG><a name="[62]"></a>__aeabi_i2d</STRONG> (Thumb, 34 bytes, Stack size 16 bytes, dflti.o(.text))
@@ -467,13 +466,13 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
-<BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
+<BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
 </UL>
 
-<P><STRONG><a name="[6c]"></a>__aeabi_d2f</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, d2f.o(.text))
+<P><STRONG><a name="[71]"></a>__aeabi_d2f</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, d2f.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = __aeabi_d2f
 </UL>
-<BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
+<BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
 </UL>
 
 <P><STRONG><a name="[88]"></a>__I$use$fp</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, iusefp.o(.text), UNUSED)
@@ -519,41 +518,46 @@ Global Symbols
 
 <P><STRONG><a name="[8d]"></a>_ll_ushift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
 
-<P><STRONG><a name="[6b]"></a>DS18B20_Read_Byte</STRONG> (Thumb, 34 bytes, Stack size 16 bytes, main.o(i.DS18B20_Read_Byte))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = DS18B20_Read_Byte
+<P><STRONG><a name="[70]"></a>DS18B20_Read_Byte</STRONG> (Thumb, 66 bytes, Stack size 16 bytes, main.o(i.DS18B20_Read_Byte))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = DS18B20_Read_Byte &rArr; DS18B20_Mode_OUT &rArr; HAL_GPIO_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<BR>[Calls]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
+<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Mode_OUT
+<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS1820_MODE_IN
 </UL>
-<BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
+<BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
 </UL>
 
-<P><STRONG><a name="[6a]"></a>DS18B20_Write_Byte</STRONG> (Thumb, 92 bytes, Stack size 16 bytes, main.o(i.DS18B20_Write_Byte))
+<P><STRONG><a name="[6f]"></a>DS18B20_Write_Byte</STRONG> (Thumb, 92 bytes, Stack size 16 bytes, main.o(i.DS18B20_Write_Byte))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = DS18B20_Write_Byte &rArr; DS18B20_Mode_OUT &rArr; HAL_GPIO_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
-<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
-<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Mode_OUT
+<BR>[Calls]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
+<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Mode_OUT
 </UL>
-<BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
+<BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
 </UL>
 
-<P><STRONG><a name="[6e]"></a>HAL_GPIO_Init</STRONG> (Thumb, 398 bytes, Stack size 40 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_Init))
+<P><STRONG><a name="[68]"></a>HAL_GPIO_Init</STRONG> (Thumb, 398 bytes, Stack size 40 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = HAL_GPIO_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Presence
-<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Mode_OUT
+<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Mode_OUT
+<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS1820_MODE_IN
 </UL>
 
-<P><STRONG><a name="[70]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_ReadPin))
-<BR><BR>[Called By]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Read_Byte
-<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Presence
+<P><STRONG><a name="[6d]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_ReadPin))
+<BR><BR>[Called By]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Read_Byte
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Check
 </UL>
 
-<P><STRONG><a name="[71]"></a>HAL_GPIO_WritePin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_WritePin))
+<P><STRONG><a name="[6c]"></a>HAL_GPIO_WritePin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_WritePin))
 <BR><BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Write_Byte
-<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Rst
+<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Write_Byte
+<LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Read_Byte
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Check
 </UL>
 
 <P><STRONG><a name="[7c]"></a>HAL_GetTick</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stm32f4xx_hal.o(i.HAL_GetTick))
@@ -681,76 +685,70 @@ Global Symbols
 
 <P><STRONG><a name="[90]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
 
-<P><STRONG><a name="[5b]"></a>main</STRONG> (Thumb, 136 bytes, Stack size 24 bytes, main.o(i.main))
+<P><STRONG><a name="[5b]"></a>main</STRONG> (Thumb, 128 bytes, Stack size 24 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = main &rArr; DS18B20_Get_Temp &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init
-<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
-<LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
+<LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
-<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
-<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Rst
-<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Presence
-<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
+<LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
+<LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Check
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL><P>
 <H3>
 Local Symbols
 </H3>
-<P><STRONG><a name="[67]"></a>DS18B20_Get_Temp</STRONG> (Thumb, 108 bytes, Stack size 16 bytes, main.o(i.DS18B20_Get_Temp))
+<P><STRONG><a name="[67]"></a>DS1820_MODE_IN</STRONG> (Thumb, 24 bytes, Stack size 24 bytes, main.o(i.DS1820_MODE_IN))
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = DS1820_MODE_IN &rArr; HAL_GPIO_Init
+</UL>
+<BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
+</UL>
+<BR>[Called By]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Read_Byte
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Check
+</UL>
+
+<P><STRONG><a name="[69]"></a>DS18B20_Check</STRONG> (Thumb, 136 bytes, Stack size 16 bytes, main.o(i.DS18B20_Check))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = DS18B20_Check &rArr; DS18B20_Mode_OUT &rArr; HAL_GPIO_Init
+</UL>
+<BR>[Calls]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
+<LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
+<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Mode_OUT
+<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS1820_MODE_IN
+</UL>
+<BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[6e]"></a>DS18B20_Get_Temp</STRONG> (Thumb, 92 bytes, Stack size 16 bytes, main.o(i.DS18B20_Get_Temp))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = DS18B20_Get_Temp &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
-<LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
-<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Write_Byte
-<LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Read_Byte
-<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Rst
-<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Presence
+<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
+<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Write_Byte
+<LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Read_Byte
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[6d]"></a>DS18B20_Mode_OUT</STRONG> (Thumb, 48 bytes, Stack size 32 bytes, main.o(i.DS18B20_Mode_OUT))
+<P><STRONG><a name="[6a]"></a>DS18B20_Mode_OUT</STRONG> (Thumb, 48 bytes, Stack size 32 bytes, main.o(i.DS18B20_Mode_OUT))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = DS18B20_Mode_OUT &rArr; HAL_GPIO_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
+<BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Write_Byte
-<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Rst
-</UL>
-
-<P><STRONG><a name="[69]"></a>DS18B20_Presence</STRONG> (Thumb, 106 bytes, Stack size 32 bytes, main.o(i.DS18B20_Presence))
-<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = DS18B20_Presence &rArr; HAL_GPIO_Init
-</UL>
-<BR>[Calls]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
-<LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_Init
-<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
-</UL>
-<BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
+<BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Write_Byte
+<LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Read_Byte
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Check
 </UL>
 
-<P><STRONG><a name="[68]"></a>DS18B20_Rst</STRONG> (Thumb, 52 bytes, Stack size 8 bytes, main.o(i.DS18B20_Rst))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = DS18B20_Rst &rArr; DS18B20_Mode_OUT &rArr; HAL_GPIO_Init
-</UL>
-<BR>[Calls]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
-<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
-<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Mode_OUT
-</UL>
-<BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Get_Temp
-</UL>
-
-<P><STRONG><a name="[6f]"></a>delay_us</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, main.o(i.delay_us))
-<BR><BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
-</UL>
-<BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Write_Byte
-<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
-<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Rst
-<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Presence
+<P><STRONG><a name="[6b]"></a>delay_us</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, main.o(i.delay_us))
+<BR><BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Write_Byte
+<LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Read_Byte
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DS18B20_Check
 </UL>
 
 <P><STRONG><a name="[79]"></a>NVIC_SetPriority</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, stm32f4xx_hal_cortex.o(i.NVIC_SetPriority))
