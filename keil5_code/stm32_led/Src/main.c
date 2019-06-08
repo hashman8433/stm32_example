@@ -35,6 +35,8 @@
 #define LOW GPIO_PIN_RESET
 #define LED_ON HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, LOW);
 #define LED_OFF HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, HIGH);
+#define LED1_ON HAL_GPIO_WritePin(GPIOE, GPIO_PIN_6, LOW);
+#define LED1_OFF HAL_GPIO_WritePin(GPIOE, GPIO_PIN_6, HIGH);
 
 #include "stm32f4xx_hal.h"
 
@@ -57,6 +59,8 @@ static void delay_us(uint16_t);
 static void delay_ms(uint16_t);
 static float DS18B20_Get_Temp(void);
 static uint8_t DS18B20_Check(void);
+static void start_slot(void);
+static void DS1820_MODE_IN(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
@@ -91,6 +95,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, HIGH);
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_6, HIGH);
   while (1)
   {
   /* USER CODE END WHILE */
@@ -99,13 +104,22 @@ int main(void)
 		
 		if(!DS18B20_Check()) {
 			templature = DS18B20_Get_Temp();
-			LED_ON;
+			//LED_ON;
 			// printf("\r\n no ds18b20 exit \r\n");
 		}else {
 			LED_OFF;
 		}
 		delay_ms(200);
 		
+		/**
+		DS1820_MODE_IN();
+		if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6))
+			LED_ON
+		else
+			LED_OFF
+		
+		delay_ms(200);
+		*/
   }
   /* USER CODE END 3 */
 
@@ -119,16 +133,28 @@ void SystemClock_Config(void)
 {
 
   RCC_OscInitTypeDef RCC_OscInitStruct;
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
 
   __PWR_CLK_ENABLE();
-
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
 
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = 16;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = 8;
+  RCC_OscInitStruct.PLL.PLLN = 216;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV6;
+  RCC_OscInitStruct.PLL.PLLQ = 4;
   HAL_RCC_OscConfig(&RCC_OscInitStruct);
+
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
 
   HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
 
@@ -161,12 +187,19 @@ static void DS18B20_Mode_OUT(void) {
 */
 static void DS1820_MODE_IN(void) {
 	
-	GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStruct;
 
-	GPIO_InitStructure.Pin = GPIO_PIN_6; 
-	GPIO_InitStructure.Mode = GPIO_MODE_INPUT;	 // 浮空输入模式
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_InitStruct.Pin = GPIO_PIN_6; 
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;	 // 浮空输入模式
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 	
+	GPIO_InitTypeDef GPIO_InitStructure1;
+
+	GPIO_InitStructure1.Pin = GPIO_PIN_7; 
+	GPIO_InitStructure1.Mode = GPIO_MODE_INPUT;	 // 浮空输入模式
+	GPIO_InitStructure1.Pull  = GPIO_PULLUP;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStructure1);
 }
 
 /**
@@ -175,7 +208,6 @@ static void DS1820_MODE_IN(void) {
 static void DS18B20_Rst(void) {
 	
 	DS18B20_Mode_OUT();
-	delay_us(15);
 	/* 拉高 B5 电平 */
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, LOW);
 	delay_us(750);
@@ -191,7 +223,6 @@ static uint8_t DS18B20_Presence(void) {
 	
 	uint8_t pulse_time = 0;
 	
-	delay_us(2);
 	DS1820_MODE_IN();
 	
 	while ( HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) && pulse_time < 100 ) {
@@ -204,7 +235,7 @@ static uint8_t DS18B20_Presence(void) {
 	else                 
 		pulse_time = 0; 
 	
-	while( !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) && pulse_time<240 )  
+	while( !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) && pulse_time < 240 )  
 	{
 		pulse_time++;
 		delay_us(1);
@@ -221,34 +252,44 @@ static uint8_t DS18B20_Check(void) {
 	return DS18B20_Presence();
 }
 
+// 开始时序
+void start_slot() {
+	DS18B20_Mode_OUT();
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, LOW);
+	delay_us(10);
+	DS1820_MODE_IN();
+}
 
 /**
 	读取 ds18b20 字节
 */
-uint8_t dat = 0;
+
 uint8_t DS18B20_Read_Byte(void)
 {
-	uint8_t i, j;	
+	uint8_t i, j, z = 0;	
+	uint8_t dat = 0;
 	
 	for(i=0; i<8; i++) 
 	{
-		DS18B20_Mode_OUT();
-		/* 拉低电平 */
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, LOW);
-		delay_us(8);
-		
-		DS1820_MODE_IN();
+		start_slot();
 		j = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6);
-		dat = (dat) | (j<<i);
-		delay_us(60);
+		if (j) 
+			dat = (dat) | (1<<i);
+		
+		delay_us(45);
 	}
 	
 	return dat;																																																																																
 }
 
+/**
+	写入 ds18b20 字节
+*/
+
 void DS18B20_Write_Byte(uint8_t dat)
 {
 	uint8_t i, testb;
+	
 	DS18B20_Mode_OUT();
 	
 	for( i=0; i<8; i++ )
@@ -256,24 +297,27 @@ void DS18B20_Write_Byte(uint8_t dat)
 		testb = dat&0x01;
 		dat = dat>>1;		
 		
+		// start_slot();
+		
 		if (testb)
 		{			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, LOW);
-			delay_us(16);   
+			delay_us(8);   
 			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, HIGH);
-			delay_us(45);    
+			delay_us(60);    
 		}		
 		else
 		{			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, LOW);
 			/* 60us < Tx 0 < 120us */
-			delay_us(45);
+			delay_us(70);
 			
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, HIGH);
 			
-			delay_us(16);
+			delay_us(2);
 		}
+		
 	}
 }
 
@@ -282,29 +326,46 @@ void DS18B20_Write_Byte(uint8_t dat)
 	获取温度信息
  **************************************************************************************/
 
-uint8_t tpmsb, tplsb;
-short s_tem;
-float f_tem;
+
 
 float DS18B20_Get_Temp(void)
 {
 	
+	uint8_t tpmsb, tplsb;
+	short s_tem;
+	float f_tem;
 	
-	//DS18B20_Rst();	   
-	//DS18B20_Presence();	 
+	DS18B20_Rst();	   
+	DS18B20_Presence();	 
 	DS18B20_Write_Byte(0XCC);				
 	DS18B20_Write_Byte(0X44);				
+	delay_ms(200);
 	
-	//DS18B20_Rst();
-  //DS18B20_Presence();
+	
+	DS18B20_Rst();
+  DS18B20_Presence();
 	DS18B20_Write_Byte(0XCC);				
-  DS18B20_Write_Byte(0XBE);				
-	
+  DS18B20_Write_Byte(0XBE);	
 	tplsb = DS18B20_Read_Byte();		 
 	tpmsb = DS18B20_Read_Byte(); 
 	
 	s_tem = tpmsb<<8;
 	s_tem = s_tem | tplsb;
+	
+	for (int i = 16; i <16; i++) {
+		if(s_tem&(1<<i)) {
+			LED_ON
+			LED1_ON
+			
+		} else {
+			LED_ON
+			LED1_OFF
+		}
+		delay_ms(2000);
+		LED_OFF
+		LED1_OFF
+		delay_ms(2000);
+	}
 	
 	if( s_tem < 0 )		
 		f_tem = (~s_tem+1) * 0.0625;	
@@ -329,6 +390,7 @@ void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __GPIOE_CLK_ENABLE();
+	__GPIOB_CLK_ENABLE();
 	
   /*Configure GPIO pin : PE5 */
   GPIO_InitStruct.Pin = GPIO_PIN_5;
@@ -336,17 +398,28 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+	
+	GPIO_InitTypeDef GPIO_InitStruct1;
+	 /*Configure GPIO pin : PE5 */
+  GPIO_InitStruct1.Pin = GPIO_PIN_6;
+  GPIO_InitStruct1.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct1.Pull = GPIO_PULLUP;
+  GPIO_InitStruct1.Speed = GPIO_SPEED_HIGH;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct1);
 
 	
 }
 
 void delay_us(uint16_t us)
 {
-  SysTick->LOAD=us*9;          //时间加载       
-	SysTick->CTRL|=0x01;             //开始倒数     
-	while(!(SysTick->CTRL&(1<<16))); //等待时间到达  
-	SysTick->CTRL=0X00000000;        //关闭计数器 
-	SysTick->VAL=0X00000000;         //清空计数器     
+  uint16_t i;
+	
+	do
+  {
+    i = 6;
+		while(i--)__nop();
+  } while (--us);
+
 }
 
 void delay_ms(uint16_t ms)
@@ -355,8 +428,8 @@ void delay_ms(uint16_t ms)
   {
     delay_us(250);
     delay_us(250);
-    delay_us(250);
-    delay_us(250);
+		delay_us(250);
+		delay_us(250);
   } while (--ms);
 }
 
